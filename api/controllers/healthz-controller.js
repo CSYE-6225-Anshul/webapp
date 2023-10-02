@@ -1,7 +1,6 @@
-import * as healthzService from "../services/healthz-service.js";
-import db from "../models/index.js";
+const db = require('../models/index.js');
 
-export const get = async (req, res, next) => {
+const get = async (req, res, next) => {
     try {
         let payloadCondition = false;
         if (req.query != null && Object.keys(req.query).length > 0) payloadCondition = true;
@@ -45,4 +44,8 @@ const checkConnection = async (res, next) => {
         console.error('Unable to connect to the database.');
         res.status(503).json();
     }
+}
+
+module.exports = {
+    get
 }

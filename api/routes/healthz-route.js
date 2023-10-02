@@ -1,6 +1,5 @@
-import express from "express";
-import * as healthzController from '../controllers/healthz-controller.js';
-
+const express = require('express');
+const healthzController = require('../controllers/healthz-controller.js');
 const Router = express.Router();
 
 Router.route("/")
@@ -15,4 +14,4 @@ Router.use((req, res, next) => {
     next(); // Continue processing for GET requests
 });
 
-export default Router;
+module.exports = Router;

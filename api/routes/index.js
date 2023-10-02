@@ -1,4 +1,4 @@
-import healthzRouter from "./healthz-route.js";
+const healthzRouter = require('./healthz-route.js');
 
 const route = (app) => {
     app.use('/healthz', healthzRouter);
@@ -7,4 +7,4 @@ const route = (app) => {
     });
 }
 
-export default route;
+module.exports = route;

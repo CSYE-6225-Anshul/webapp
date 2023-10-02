@@ -1,11 +1,10 @@
-import express from "express"; 
-import cors from "cors";
-import db from "./models/index.js";
-import routes from "./routes/index.js";
-import dotenv from 'dotenv';
-dotenv.config();
-
+const express = require('express');
+const cors = require('cors');
+const db = require('./models/index');
+const routes = require('./routes/index');
+const dotenv = require('dotenv').config();
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -18,4 +17,4 @@ app.use((req, res, next) => {
 // passing app in routes
 routes(app);
 
-export default app;
+module.exports = app;
