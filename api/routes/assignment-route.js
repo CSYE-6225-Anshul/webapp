@@ -1,14 +1,12 @@
 const express = require('express');
-const assignmentController = require('../controllers/assignment-controller');
 const Router = express.Router();
+const assignmentController = require('../controllers/assignment-controller.js');
 
-Router
-    .route('/')
+Router.route('/')
     .get(assignmentController.getAllAssignments)
     .post(assignmentController.createAssignment);
 
-Router
-    .route('/:id')
+Router.route('/:id')
     .get(assignmentController.getAssignment)
     .put(assignmentController.updateAssignment)
     .delete(assignmentController.deleteAssignment);

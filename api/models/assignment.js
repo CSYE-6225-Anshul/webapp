@@ -27,13 +27,29 @@ module.exports = (sequelize, DataTypes) => {
     points: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      min: 1,
-      max: 10
+      validate: {
+        min: {
+          args: [1],
+          msg: 'Points must be at least 1.',
+        },
+        max: {
+          args: [10],
+          msg: 'Points must be at most 10.',
+        },
+      },
     },
     num_of_attempts: {
       type: DataTypes.INTEGER,
-      min: 1,
-      max: 5
+      validate: {
+        min: {
+          args: [1],
+          msg: 'Number of attempts must be at least 1.',
+        },
+        max: {
+          args: [5],
+          msg: 'Number of attempts must be at most 5.',
+        },
+      },
     },
     deadline: {
       type: DataTypes.DATE,

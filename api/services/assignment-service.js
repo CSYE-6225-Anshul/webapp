@@ -1,19 +1,20 @@
-const Assignment = require('../models/assignment');
+const db = require('../models/index');
 
 const getAllAssignments = async () => {
-    return await Assignment.findAll();
+    console.log('-her')
+    return await db.Assignment.findAll();
 }
 
 const getAssignment = async (id) => {
-    return await Assignment.findByPk(id);
+    return await db.Assignment.findByPk(id);
 }
 
 const createAssignment = async (body) => {
-    return await Assignment.create(body);
+    return await db.Assignment.create(body);
 }
 
 const updateAssignment = async (id, body) => {
-    return await Assignment.update(body, {
+    return await db.Assignment.update(body, {
         where: {
             id: id
         }
@@ -21,7 +22,7 @@ const updateAssignment = async (id, body) => {
 }
 
 const deleteAssignment = async (id) => {
-    return await Assignment.destroy({
+    return await db.Assignment.destroy({
         where: {
             id: id
         }

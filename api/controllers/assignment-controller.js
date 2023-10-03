@@ -1,6 +1,6 @@
 const assignmentService = require('../services/assignment-service');
 
-const getAllAssignments = async (req, res) => {
+const getAllAssignments = async (req, res, next) => {
     try {
         const assignments = await assignmentService.getAllAssignments();
         res.status(200).json(assignments);
