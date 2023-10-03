@@ -9,27 +9,35 @@ module.exports = {
         // autoIncrement: true,
         primaryKey: true,
         type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4
+        defaultValue: Sequelize.UUIDV4,
+        readOnly: true
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       points: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        min: 1,
+        max: 10
       },
       num_of_attempts: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        min: 1,
+        max: 5
       },
       deadline: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false
       },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+      assignment_created: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+      assignment_updated: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
   },

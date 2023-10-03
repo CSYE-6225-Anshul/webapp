@@ -9,27 +9,33 @@ module.exports = {
         // autoIncrement: true,
         primaryKey: true,
         type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4
+        defaultValue: Sequelize.UUIDV4,
+        readOnly: true
       },
       first_name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       last_name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       password: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        writeOnly: true
       },
       email: {
-        type: Sequelize.STRING
-      },
-      createdAt: {
+        type: Sequelize.STRING,
         allowNull: false,
-        type: Sequelize.DATE
+        unique: true
       },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+      account_created: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      },
+      account_updated: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
   },

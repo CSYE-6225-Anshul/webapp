@@ -18,14 +18,39 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.UUID, // Corrected typo here
       defaultValue: DataTypes.UUIDV4, // You might want to add a default value
+      readOnly: true
     },
-    name: DataTypes.STRING,
-    points: DataTypes.NUMBER,
-    num_of_attempts: DataTypes.NUMBER,
-    deadline: DataTypes.DATE
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    points: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      min: 1,
+      max: 10
+    },
+    num_of_attempts: {
+      type: DataTypes.INTEGER,
+      min: 1,
+      max: 5
+    },
+    deadline: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    assignment_created: { 
+      type: DataTypes.DATE,
+      defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+    },
+    assignment_updated: {
+      type: DataTypes.DATE,
+      defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+    },
   }, {
     sequelize,
     modelName: 'Assignment',
+    timestamps: false, // Disable timestamps
   });
   return Assignment;
 };
