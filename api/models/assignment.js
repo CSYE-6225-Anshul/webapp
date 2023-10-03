@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Assignment.init({
+    id: {
+      primaryKey: true,
+      type: DataTypes.UUID, // Corrected typo here
+      defaultValue: DataTypes.UUIDV4, // You might want to add a default value
+    },
     name: DataTypes.STRING,
     points: DataTypes.NUMBER,
     num_of_attempts: DataTypes.NUMBER,
