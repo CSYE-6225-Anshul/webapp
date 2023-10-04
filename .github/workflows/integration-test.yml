@@ -1,53 +1,40 @@
-name: Integration Tests
+name: integration-test
 
 on:
-  push:
-    branches:
-      - main
+    pull_request:
+        branches: [main]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
+        services:
+            mysql:
+                image: mysql:latest
+                env:
+                    MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+                    MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+                    MYSQL_USER: ${{ secrets.MYSQL_USER }}
+                    MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+                ports:
+                    - 3306:3306
+                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
-    services:
-      mysql:
-        image: mysql:latest
-        env:
-          MYSQL_ROOT_PASSWORD: ${{secrets.ROOT_PASSWORD}}
-          MYSQL_DATABASE: ${{secrets.MYSQL_DATABASE}}
-          MYSQL_USER: ${{secrets.MYSQL_USER}}
-          MYSQL_PASSWORD: ${{secrets.MYSQL_PASSWORD}}
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        steps:
+            - uses: actions/checkout@v2
 
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+            - name: Setup Node
+              uses: actions/setup-node@v2
+              with:
+                node-version: "18"
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '14'
+            - name: Install dependencies
+              run: npm install
+              
 
-    - name: Install Dependencies
-      run: npm install
-
-    - name: Wait for MySQL Service to be ready
-      run: |
-        timeout=300
-        interval=5
-        until nc -z localhost 3306 || [ $timeout -eq 0 ]; do
-          echo "Waiting for MySQL to be ready..."
-          sleep $interval
-          timeout=$((timeout - interval))
-        done
-        if [ $timeout -eq 0 ]; then
-          echo "MySQL service did not become ready within the specified time."
-          exit 1
-        else
-          echo "MySQL is ready!"
-        fi
-
-    - name: Run Integration Tests
-      run: npm test
+            - name: Run Tests
+              run: npm test
+              env:
+                MYSQL_USER: ${{ secrets.MYSQL_USER }}
+                MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+                MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+                MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
