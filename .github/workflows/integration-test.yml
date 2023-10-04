@@ -31,9 +31,10 @@ jobs:
         sudo apt-get update -y
         sudo apt-get install mysql-server -y
         sudo service mysql start
+        sudo cat /var/log/mysql/error.log
         MYSQL_ROOT_PASSWORD=$(sudo grep 'temporary password' /var/log/mysql/error.log | awk '{print $NF}')
-        echo $MYSQL_ROOT_PASSWORD
-        sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH 'mysql_native_password' BY '${{vars.MYSQL_PASSWORD}}';FLUSH PRIVILEGES;CREATE DATABASE ${{vars.MYSQL_DATABASE}}"
+        echo "Temporary MySQL Password: $MYSQL_ROOT_PASSWORD"
+        # sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH 'mysql_native_password' BY 'anshul';FLUSH PRIVILEGES;CREATE DATABASE ${{vars.MYSQL_DATABASE}}"
 
     - name: Connect to MySQL
       run: |
