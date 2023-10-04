@@ -2,52 +2,41 @@ name: integration-test
 
 on:
     pull_request:
-        branches: [main]
+      branches:
+        - main
 
-jobs:
+jobs:  
     build:
-        runs-on: ubuntu-latest
+      name: CI
+      runs-on: ubuntu-latest
 
-        # services:
-        #     mysql:
-        #         image: mysql:latest
-        #         env:
-        #             MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-        #             MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-        #         ports:
-        #             - 3306:3306
-        #         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-        steps:
-            - uses: actions/checkout@v2
-
-            - name: Setup Node
-              uses: actions/setup-node@v2
-              with:
-                node-version: "18"
-
-            - name: Install dependencies
-              run: npm install
-              env:
-                MYSQL_USER: ${{ secrets.MYSQL_USER }}
-                MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-                MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-            
-            - name: Display .env file
-              run:
-                echo "MYSQL_USER=root" >> .env
-                echo "MYSQL_PASSWORD=anshul" >> .env
-                echo "MYSQL_DATABASE=cloud_local" >> .env
-                cat .env
-            
-            - name: Configure MySQL
-              run: 
-                sudo apt-get update
-                sudo apt-get install -y curl
-                sudo systemctl start mysql
-                sudo systemctl status mysql
-                mysql -u root -p"${{ secrets.MYSQL_PASSWORD }}" -e "CREATE DATABASE cloud_local;"
-
-            - name: Run Tests
-              run: npm test
-
+      - name: Setup Node.js  
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+  
+      - name: Install dependencies
+        run: npm install
+  
+      - name: Display .env file
+        run: |
+          echo "DB_USER=root" >> .env
+          echo "DB_PASSWORD=root" >> .env
+          echo "DB_NAME=Assignment3" >> .env
+          echo "PORT=3000" >> .env
+          cat .env
+  
+      - name: configuremysql
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
+          sudo systemctl start mysql
+          sudo systemctl status mysql
+          mysql -u root -p"${{ secrets.MY_SQL_PASSWORD }}" -e "CREATE DATABASE  Assignment3;"
+  
+      - name: Run Tests
+        run : npm test
