@@ -8,15 +8,15 @@ jobs:
     build:
         runs-on: ubuntu-latest
 
-        services:
-            mysql:
-                image: mysql:latest
-                env:
-                    MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-                    MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-                ports:
-                    - 3306:3306
-                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        # services:
+        #     mysql:
+        #         image: mysql:latest
+        #         env:
+        #             MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+        #             MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+        #         ports:
+        #             - 3306:3306
+        #         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
         steps:
             - uses: actions/checkout@v2
@@ -26,19 +26,27 @@ jobs:
               with:
                 node-version: "18"
 
-            - name: Display .env file
-              run:
-                echo "MYSQL_USER=root" >> .env
-                echo "MYSQL_PASSWORD=anshul" >> .env
-                echo "MYSQL_DATABASE=cloud_local" >> .env
-                cat .env
-
             - name: Install dependencies
               run: npm install
               env:
                 MYSQL_USER: ${{ secrets.MYSQL_USER }}
                 MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
                 MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+            
+            - name: Display .env file
+              run:
+                echo "MYSQL_USER=root" >> .env
+                echo "MYSQL_PASSWORD=anshul" >> .env
+                echo "MYSQL_DATABASE=cloud_local" >> .env
+                cat .env
+            
+            - name: Configure MySQL
+              run: 
+                sudo apt-get update
+                sudo apt-get install -y curl
+                sudo systemctl start mysql
+                sudo sustemctl status mysql
+                mysql -u root -p"${{ secrets.MYSQL_PASSWORD }}" -e "CREATE DATABASE cloud_local;"
 
             - name: Run Tests
               run: npm test
