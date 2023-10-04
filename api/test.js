@@ -1,6 +1,6 @@
 const chai = require('chai');
 const supertest = require('supertest');
-const app = require('./app.js'); // Assuming your Express app is in app.js
+const app = require('./app.js');
 
 const { expect } = chai;
 const request = supertest(app);
