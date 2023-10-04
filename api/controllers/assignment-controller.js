@@ -65,6 +65,13 @@ const updateAssignment = async (req, res) => {
         const assignmentId = req.params['id'];
         const userId = req.user;
         
+        let {name, points, num_of_attempts, deadline} = req.body;
+        if(name.length <= 0 || deadline.length <= 0) {
+            return res.status(400).json({ error: 'All fields should be defined.' });
+        }
+        if (points < 1 || points > 100 || num_of_attempts < 1 || num_of_attempts > 100) {
+            return res.status(400).json({ error: 'Assignment points & num_of_attempts must be between 1 and 100.' });
+        }
         // Check if the user who created the assignment is updating it
         const assignment = await assignmentService.getAssignment(assignmentId);
         if (!assignment ||  assignment.accAssignment.accountId !== userId) {
