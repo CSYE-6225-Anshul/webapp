@@ -24,10 +24,10 @@ jobs:
   
       - name: Display .env file
         run: |
-          echo "DB_USER=root" >> .env
-          echo "DB_PASSWORD=root" >> .env
-          echo "DB_NAME=Assignment3" >> .env
-          echo "PORT=3000" >> .env
+          echo "MYSQL_USER=root" >> .env
+          echo "MYSQL_PASSWORD=anshul" >> .env
+          echo "MYSQL_DATABASE=cloud_local" >> .env
+          echo "PORT=3006" >> .env
           cat .env
   
       - name: configuremysql
@@ -36,7 +36,7 @@ jobs:
           sudo apt-get install -y curl
           sudo systemctl start mysql
           sudo systemctl status mysql
-          mysql -u root -p"${{ secrets.MY_SQL_PASSWORD }}" -e "CREATE DATABASE  Assignment3;"
+          mysql -u root -p"${{ secrets.MYSQL_PASSWORD }}" -e "CREATE DATABASE  cloud_local;"
   
       - name: Run Tests
         run : npm test
