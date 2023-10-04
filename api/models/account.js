@@ -11,6 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      // Account.belongsToMany(models.Assignment, {
+      //   through: models.AccountAssignment,
+      //   foreignKey: 'accountId',
+      //   otherKey: 'assignmentId',
+      //   as: 'assignments',
+      // });
+      Account.hasMany(models.AccountAssignment, { foreignKey: 'accountId', as: 'assignments' });
     }
   }
   Account.init({
@@ -50,5 +57,6 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Account',
     timestamps: false, // Disable timestamps
   });
+  
   return Account;
 };
