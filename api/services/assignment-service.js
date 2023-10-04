@@ -1,36 +1,25 @@
 const db = require('../models/index');
 
-const getAllAssignments = async () => {
+const getAllAssignments = async (accountId) => {
     return await db.Assignment.findAll({
-        include: [
-            {
+            include: [
+              {
                 model: db.AccountAssignment,
-                as: 'assignment',
-                include: [
-                    {
-                        model: db.Account,
-                        as: 'account',
-                        attributes: ['id', 'first_name', 'last_name', 'email'],
-                    },
-                ],
-            },
-        ],
+                as: 'accAssignment',
+                where: {
+                  accountId: accountId,
+                },
+              },
+            ],
     });
 }
 
-const getAssignment = async (id) => {
+const getAssignment = async (id, accountId) => {
     return await db.Assignment.findByPk(id, {
         include: [
             {
                 model: db.AccountAssignment,
-                as: 'users',
-                include: [
-                    {
-                        model: db.Account,
-                        as: 'account',
-                        attributes: ['id', 'first_name', 'last_name', 'email'],
-                    },
-                ],
+                as: 'accAssignment'
             },
         ],
     });
@@ -43,7 +32,6 @@ const createAssignment = async (body) => {
         const assignment = await db.Assignment.create(body, { transaction });
 
         // Create a record in AccountAssignment
-        console.log('------accountId', body)
         await db.AccountAssignment.create({
             accountId: body.user_id, // Assuming user_id is present in the body
             assignmentId: assignment.id,
@@ -53,14 +41,13 @@ const createAssignment = async (body) => {
         return assignment;
     } catch (error) {
         await transaction.rollback();
-        throw error;
     }
 }
 
 const updateAssignment = async (id, body) => {
     const transaction = await db.sequelize.transaction();
-    console.log('-herer, ', id, body)
     try {
+        body.assignment_updated = new Date();
         const updatedAssignment = await db.Assignment.update(body, {
             where: {
                 id: id
@@ -87,7 +74,6 @@ const updateAssignment = async (id, body) => {
         return updatedAssignment[1];
     } catch (error) {
         await transaction.rollback();
-        throw error;
     }
 }
 
@@ -115,7 +101,6 @@ const deleteAssignment = async (id) => {
         return deletedAssignment;
     } catch (error) {
         await transaction.rollback();
-        throw error;
     }
 }
 

@@ -33,7 +33,7 @@ const authMiddleware = async (req, res, next) => {
   } catch (error) {
     // Handle any errors that occur during the authorization process
     console.error(error);
-    // res.status(500).send('Internal Server Error');
+    res.status(500).send('Internal Server Error');
   }
 };
 
