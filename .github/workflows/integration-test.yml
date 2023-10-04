@@ -37,8 +37,7 @@ jobs:
           sudo systemctl start mysql
           sudo systemctl enable mysql
           sudo systemctl status mysql
-          mysqladmin -u root password "${{ secrets.MYSQL_PASSWORD }}"
-          mysql -u root -p "${{ secrets.MYSQL_PASSWORD }}" -e "CREATE DATABASE  cloud_local;"
+          mysql -u root -p "${{ secrets.MYSQL_PASSWORD }}" -e "CREATE DATABASE cloud_local;"
   
       - name: Run Tests
         run : npm test
