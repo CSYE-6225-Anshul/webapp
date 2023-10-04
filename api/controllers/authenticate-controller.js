@@ -1,5 +1,5 @@
 const db = require("../models/index");
-const basicAuth = require("basic-auth");
+// const basicAuth = require("basic-auth");
 const bcrypt = require("bcrypt");
 
 const authMiddleware = async (req, res, next) => {
