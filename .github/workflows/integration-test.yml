@@ -9,16 +9,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:latest
-        env:
-          MYSQL_ROOT_PASSWORD: ${{vars.MYSQL_PASSWORD}}
-          MYSQL_DATABASE: ${{vars.MYSQL_DATABASE}}
-        ports: 
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
@@ -38,10 +28,10 @@ jobs:
 
     - name: Set up MySQL
       run: |
-        until mysql -hlocalhost -uroot -p${{vars.MYSQL_PASSWORD}} -e ""; do
-          echo "Waiting for MySQL to be ready..."
-          sleep 5
-        done
+        sudo apt-get update -y
+        sudo apt-get install mysql-server -y
+        sudo service mysql start
+        sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH 'mysql_native_password' BY '${{vars.MYSQL_PASSWORD}}';FLUSH PRIVILEGES;CREATE DATABASE ${{vars.MYSQL_DATABASE}}"
 
     - name: Connect to MySQL
       run: |
