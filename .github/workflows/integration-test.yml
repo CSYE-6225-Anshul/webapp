@@ -1,7 +1,7 @@
 name: Integration Tests
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
@@ -24,6 +24,7 @@ jobs:
         echo "MYSQL_USER==${{secrets.MYSQL_USER}}" >> .env
         echo "MYSQL_PASSWORD==${{secrets.MYSQL_PASSWORD}}" >> .env
         echo "MYSQL_DATABASE==${{secrets.MYSQL_DATABASE}}" >> .env
+        cat .env
 
     - name: Setup Mysql
       uses: mirromutth/mysql-action@v1.1
@@ -32,6 +33,9 @@ jobs:
         mysql version: latest
         mysql database: cloud_local
         mysql root password: anshul
+    
+    - name: Confirm SQL Setup
+      run: mysql -u root -panshul -e 'SHOW DATABASES;'
 
     - name: Run Integration Tests
       run: npm test
