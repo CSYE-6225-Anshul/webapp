@@ -1,4 +1,5 @@
 const assignmentService = require('../services/assignment-service');
+const db = require('../models/index.js');
 
 // Payload error response fn
 const setPayloadErrResponse = (res) => {
@@ -14,6 +15,7 @@ const getAllAssignments = async (req, res, next) => {
             // If the payload meets the error condition
             return setPayloadErrResponse(res);
         }
+
         let accountId = req.user;
         const assignments = await assignmentService.getAllAssignments(accountId);
         res.status(200).json(assignments);
@@ -28,7 +30,7 @@ const getAllAssignments = async (req, res, next) => {
     }
 }
 
-const getAssignment = async (req, res) => {
+const getAssignment = async (req, res, next) => {
     try {
         let payloadCondition = false;
         if (req.body != null && Object.keys(req.body).length > 0) payloadCondition = true;
@@ -60,7 +62,7 @@ const getAssignment = async (req, res) => {
     }
 }
 
-const createAssignment = async (req, res) => {
+const createAssignment = async (req, res, next) => {
     try {
         let payloadCondition = false;
         if (req.query != null && Object.keys(req.query).length > 0) payloadCondition = true;
@@ -95,7 +97,7 @@ const createAssignment = async (req, res) => {
     }
 }
 
-const updateAssignment = async (req, res) => {
+const updateAssignment = async (req, res, next) => {
     try {
         if (!req.body || req.body == null || Object.keys(req.body).length <= 0) {
             return res.status(400).json({ error: 'All fields should be defined.' });
@@ -132,7 +134,7 @@ const updateAssignment = async (req, res) => {
     }
 }
 
-const deleteAssignment = async (req, res) => {
+const deleteAssignment = async (req, res, next) => {
     try {
         let payloadCondition = false;
         if (req.body != null && Object.keys(req.body).length > 0) payloadCondition = true;
