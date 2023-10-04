@@ -28,6 +28,10 @@ jobs:
 
             - name: Install dependencies
               run: npm install
+              env:
+                MYSQL_USER: ${{ secrets.MYSQL_USER }}
+                MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+                MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
 
             - name: Run Tests
               run: npm test
