@@ -29,14 +29,13 @@ jobs:
           echo "MYSQL_DATABASE=cloud_local" >> .env
           echo "PORT=3006" >> .env
           cat .env
-          
   
       - name: configuremysql
         run: |
           sudo apt-get update
           sudo apt-get install -y curl
           sudo systemctl start mysql
-          sudo systemctl status mysql  mysql -u root -p"${{ secrets.MYSQL_PASSWORD }}" -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY '${{ secrets.MYSQL_PASSWORD }}' WITH GRANT OPTION; FLUSH PRIVILEGES; CREATE DATABASE cloud_local;"
-  
+          sudo systemctl status mysql
+          mysql -u root -p"${{ secrets.MYSQL_PASSWORD }}" -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY '${{ secrets.MYSQL_PASSWORD }}' WITH GRANT OPTION; FLUSH PRIVILEGES; CREATE DATABASE cloud_local;"
       - name: Run Tests
         run : npm test
