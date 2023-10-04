@@ -1,7 +1,19 @@
 const assignmentService = require('../services/assignment-service');
 
+// Payload error response fn
+const setPayloadErrResponse = (res) => {
+    res.status(400).json();
+}
+
 const getAllAssignments = async (req, res, next) => {
     try {
+        let payloadCondition = false;
+        if (req.query != null && Object.keys(req.query).length > 0) payloadCondition = true;
+        if (req.body != null && Object.keys(req.body).length > 0) payloadCondition = true;
+        if (payloadCondition) {
+            // If the payload meets the error condition
+            return setPayloadErrResponse(res);
+        }
         let accountId = req.user;
         const assignments = await assignmentService.getAllAssignments(accountId);
         res.status(200).json(assignments);
@@ -18,13 +30,25 @@ const getAllAssignments = async (req, res, next) => {
 
 const getAssignment = async (req, res) => {
     try {
+        let payloadCondition = false;
+        if (req.body != null && Object.keys(req.body).length > 0) payloadCondition = true;
+        if (payloadCondition) {
+            // If the payload meets the error condition
+            return setPayloadErrResponse(res);
+        }
+        
         const accountId = req.user;
         const assignment = await assignmentService.getAssignment(req.params.id, accountId);
 
         if(assignment && assignment.accAssignment && assignment.accAssignment.accountId !== accountId) {
             return res.status(403).json({ error: 'You do not have permission to view this assignment.' });
         }
-        res.status(200).json(assignment);
+        if(assignment) {
+            res.status(200).json(assignment);
+        }
+        else {
+            res.status(404).json();    
+        }
     } catch (error) {
         if (error.name === 'SequelizeValidationError') {
             return res.status(400).json({ error: 'Validation error', details: error.errors });
@@ -38,6 +62,17 @@ const getAssignment = async (req, res) => {
 
 const createAssignment = async (req, res) => {
     try {
+        let payloadCondition = false;
+        if (req.query != null && Object.keys(req.query).length > 0) payloadCondition = true;
+        if (payloadCondition) {
+            // If the payload meets the error condition
+            return setPayloadErrResponse(res);
+        }
+
+        if (!req.body || req.body == null || Object.keys(req.body).length <= 0) {
+            return res.status(400).json({ error: 'All fields should be defined.' });
+        }
+
         req.body.user_id = req.user;
         // Additional validation for assignment points
         let {name, points, num_of_attempts, deadline} = req.body;
@@ -62,9 +97,12 @@ const createAssignment = async (req, res) => {
 
 const updateAssignment = async (req, res) => {
     try {
+        if (!req.body || req.body == null || Object.keys(req.body).length <= 0) {
+            return res.status(400).json({ error: 'All fields should be defined.' });
+        }
+        
         const assignmentId = req.params['id'];
         const userId = req.user;
-        
         let {name, points, num_of_attempts, deadline} = req.body;
         if(name.length <= 0 || deadline.length <= 0) {
             return res.status(400).json({ error: 'All fields should be defined.' });
@@ -96,11 +134,22 @@ const updateAssignment = async (req, res) => {
 
 const deleteAssignment = async (req, res) => {
     try {
+        let payloadCondition = false;
+        if (req.body != null && Object.keys(req.body).length > 0) payloadCondition = true;
+        if (payloadCondition) {
+            // If the payload meets the error condition
+            return setPayloadErrResponse(res);
+        }
+
         const assignmentId = req.params.id;
         const userId = req.user;
 
         // Check if the user who created the assignment is deleting it
         const assignment = await assignmentService.getAssignment(assignmentId);
+        if(!assignment) {
+            return res.status(404).json();
+        }
+
         if (!assignment || assignment.accAssignment.accountId !== userId) {
             return res.status(403).json({ error: 'You do not have permission to delete this assignment.' });
         }
