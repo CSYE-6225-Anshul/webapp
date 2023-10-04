@@ -40,10 +40,6 @@ jobs:
                 MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
                 MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
 
-            - name: Configure MYSQL
-              run:
-                sudo apt-get
-
             - name: Run Tests
               run: npm test
 
