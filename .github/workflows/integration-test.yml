@@ -9,18 +9,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:latest
-        env:
-          MYSQL_ROOT_PASSWORD: ${{secrets.ROOT_PASSWORD}}
-          MYSQL_DATABASE: ${{secrets.MYSQL_DATABASE}}
-          MYSQL_USER: ${{secrets.MYSQL_USER}}
-          MYSQL_PASSWORD: ${{secrets.MYSQL_PASSWORD}}
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
@@ -31,23 +19,19 @@ jobs:
         node-version: '14'
 
     - name: Install Dependencies
-      run: npm install
-
-    - name: Wait for MySQL Service to be ready
       run: |
-        timeout=300
-        interval=5
-        until nc -z localhost 3306 || [ $timeout -eq 0 ]; do
-          echo "Waiting for MySQL to be ready..."
-          sleep $interval
-          timeout=$((timeout - interval))
-        done
-        if [ $timeout -eq 0 ]; then
-          echo "MySQL service did not become ready within the specified time."
-          exit 1
-        else
-          echo "MySQL is ready!"
-        fi
+        npm install
+        echo "MYSQL_USER==${{secrets.MYSQL_USER}}" >> .env
+        echo "MYSQL_PASSWORD==${{secrets.MYSQL_PASSWORD}}" >> .env
+        echo "MYSQL_DATABASE==${{secrets.MYSQL_DATABASE}}" >> .env
+
+    - name: Setup Mysql
+      uses: mirromutth/mysql-action@v1.1
+      with:
+        host port: 3306
+        mysql version: latest
+        mysql database: cloud_local
+        mysql root password: anshul
 
     - name: Run Integration Tests
       run: npm test
