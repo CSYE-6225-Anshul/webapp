@@ -9,6 +9,16 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: ${{vars.MYSQL_PASSWORD}}
+          MYSQL_DATABASE: ${{vars.MYSQL_DATABASE}}
+        ports: 
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
@@ -18,20 +28,27 @@ jobs:
       with:
         node-version: '14'
 
-    - name: Install Dependencies
+    - name: Setup Environment Variables
       run: |
-        npm install
-        echo "MYSQL_USER==${{secrets.MYSQL_USER}}" >> .env
-        echo "MYSQL_PASSWORD==${{secrets.MYSQL_PASSWORD}}" >> .env
-        echo "MYSQL_DATABASE==${{secrets.MYSQL_DATABASE}}" >> .env
+        touch .env
+        echo "MYSQL_DATABASE=${{vars.MYSQL_DATABASE}}" >> .env
+        echo "MYSQL_PASSWORD=${{vars.MYSQL_PASSWORD}}" >> .env
+        echo "MYSQL_USER=${{vars.MYSQL_USER}}" >> .env
+        cat .env
 
-    - name: Setup Mysql
-      uses: mirromutth/mysql-action@v1.1
-      with:
-        host port: 3306
-        mysql version: latest
-        mysql database: cloud_local
-        mysql root password: anshul
+    - name: Set up MySQL
+      run: |
+        until mysql -hlocalhost -uroot -p${{vars.MYSQL_PASSWORD}} -e ""; do
+          echo "Waiting for MySQL to be ready..."
+          sleep 5
+        done
+
+    - name: Connect to MySQL
+      run: |
+          mysql -hlocalhost -uroot -p${{vars.MYSQL_PASSWORD}} -e "SHOW DATABASES;"
+
+    - name: Install dependencies
+      run: npm install
 
     - name: Run Integration Tests
       run: npm test
