@@ -1,5 +1,5 @@
 # WEBAPP
-WebApp will be a cloud based application for CSYE6225 assignments to learn cloud. This is a basic node application with account and assignment models. Stack used: Node.js, Express.js, MySQL, Sequelize, Chai, Mocha
+WebApp will be a cloud based application for CSYE6225 assignments to learn cloud. This is a basic node application with account and assignment models. Stack used: Node.js, Express.js, MySQL, Sequelize, Chai, Mocha.
 
 ## Prerequisites
 
