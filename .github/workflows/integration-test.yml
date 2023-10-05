@@ -23,22 +23,23 @@ jobs:
         touch .env
         echo "MYSQL_DATABASE=${{vars.MYSQL_DATABASE}}" >> .env
         echo "MYSQL_PASSWORD=${{vars.MYSQL_PASSWORD}}" >> .env
-        echo "MYSQL_USER=${{vars.MYSQL_USER}}" >> .env
+        echo "MYSQL_USER=anshul" >> .env
         cat .env
 
     - name: Set up MySQL
+      uses: ankane/setup-mariadb@v1
+      with:
+        database: ${{vars.MYSQL_DATABASE}}
+
+    - name: Creating DB User
       run: |
-        sudo apt-get update -y
-        sudo apt-get install mysql-server -y
-        sudo service mysql start
-        sudo cat /var/log/mysql/error.log
-        MYSQL_ROOT_PASSWORD=$(sudo grep 'temporary password' /var/log/mysql/error.log | awk '{print $NF}')
-        echo "Temporary MySQL Password: $MYSQL_ROOT_PASSWORD"
-        # sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH 'mysql_native_password' BY 'anshul';FLUSH PRIVILEGES;CREATE DATABASE ${{vars.MYSQL_DATABASE}}"
+        sudo mysql -D ${{vars.MYSQL_DATABASE}} -e "CREATE USER 'anshul'@localhost IDENTIFIED BY '${{vars.MYSQL_PASSWORD}}';"
+        sudo mysql -D ${{vars.MYSQL_DATABASE}} -e "GRANT ALL PRIVILEGES ON ${{vars.MYSQL_DATABASE}}.* TO 'anshul'@localhost;"
+        sudo mysql -D ${{vars.MYSQL_DATABASE}} -e "FLUSH PRIVILEGES;"
 
     - name: Connect to MySQL
       run: |
-          mysql -hlocalhost -uroot -p${{vars.MYSQL_PASSWORD}} -e "SHOW DATABASES;"
+          mysql -hlocalhost -uanshul -p${{vars.MYSQL_PASSWORD}} -e "SHOW DATABASES;"
 
     - name: Install dependencies
       run: npm install
