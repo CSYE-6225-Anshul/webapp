@@ -1,5 +1,6 @@
 const assignmentService = require('../services/assignment-service');
 const db = require('../models/index.js');
+const { NUMBER } = require('sequelize');
 
 // Payload error response fn
 const setPayloadErrResponse = (res) => {
@@ -75,14 +76,31 @@ const createAssignment = async (req, res, next) => {
             return res.status(400).json({ error: 'All fields should be defined.' });
         }
 
+        if(Object.keys(req.body).length > 4) {
+            return res.status(400).json({ error: 'Extra fields not allowed.' });
+        }
+
+        console.log('------req.body', req.body, Object.keys(req.body).length)
+
+        if (!req.body || req.body == null || Object.keys(req.body).length <= 0) {
+            return res.status(400).json({ error: 'All fields should be defined.' });
+        }
+
         req.body.user_id = req.user;
         // Additional validation for assignment points
         let {name, points, num_of_attempts, deadline} = req.body;
+        if(name == undefined || points == undefined || num_of_attempts == undefined || deadline == undefined) {
+            return res.status(400).json({ error: 'All fields should be present.' });
+        }
         if(name.length <= 0 || deadline.length <= 0) {
             return res.status(400).json({ error: 'All fields should be defined.' });
         }
         if (points < 1 || points > 100 || num_of_attempts < 1 || num_of_attempts > 100) {
             return res.status(400).json({ error: 'Assignment points & num_of_attempts must be between 1 and 100.' });
+        }
+        console.log('-------------', typeof name, typeof deadline)
+        if(typeof name != 'string' || typeof points != 'number' || typeof num_of_attempts != 'number' || typeof deadline != 'string') {
+            return res.status(400).json({ error: 'Field datatype mismatch.' });
         }
         const assignment = await assignmentService.createAssignment(req.body);
         res.status(201).json(assignment);
@@ -102,15 +120,26 @@ const updateAssignment = async (req, res, next) => {
         if (!req.body || req.body == null || Object.keys(req.body).length <= 0) {
             return res.status(400).json({ error: 'All fields should be defined.' });
         }
+
+        if(Object.keys(req.body).length > 4) {
+            return res.status(400).json({ error: 'Extra fields not allowed.' });
+        }
         
         const assignmentId = req.params['id'];
         const userId = req.user;
         let {name, points, num_of_attempts, deadline} = req.body;
+        if(name == undefined || points == undefined || num_of_attempts == undefined || deadline == undefined) {
+            return res.status(400).json({ error: 'All fields should be present.' });
+        }
         if(name.length <= 0 || deadline.length <= 0) {
             return res.status(400).json({ error: 'All fields should be defined.' });
         }
         if (points < 1 || points > 100 || num_of_attempts < 1 || num_of_attempts > 100) {
             return res.status(400).json({ error: 'Assignment points & num_of_attempts must be between 1 and 100.' });
+        }
+        console.log('-------------', typeof name, typeof deadline)
+        if(typeof name != 'string' || typeof points != 'number' || typeof num_of_attempts != 'number' || typeof deadline != 'string') {
+            return res.status(400).json({ error: 'Field datatype mismatch.' });
         }
         // Check if the user who created the assignment is updating it
         const assignment = await assignmentService.getAssignment(assignmentId);
