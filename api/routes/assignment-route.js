@@ -11,4 +11,13 @@ Router.route('/:id')
     .put(assignmentController.updateAssignment)
     .delete(assignmentController.deleteAssignment);
 
+// Middleware to send an error response for non-GET requests
+Router.use((req, res, next) => {
+    if (req.method == 'PATCH') {
+      // Send an error response for non-GET requests
+      return res.status(405).json();
+    }
+    next(); // Continue processing for GET requests
+});
+
 module.exports = Router;

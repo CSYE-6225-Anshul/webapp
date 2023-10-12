@@ -8,7 +8,7 @@ const request = supertest(app);
 describe('/healtz endpoint', () => {
   it('should return a 200 status for /healthz', async () => {
     const response = await request.get('/healthz');
-    expect(response.status).to.equal(400);
+    expect(response.status).to.equal(200);
     // done();
     // process.exit();
   });
