@@ -23,6 +23,5 @@
   },
   "author": "Anshul Sharma",
   "license": "ISC",
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
