@@ -1,0 +1,31 @@
+name: Packer Build AMI
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  build-ami:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Create Zip Archive
+        run: |
+          zip -r webapp.zip .
+
+      - name: Build AMI
+        run: |
+          packer init ./packer/ami.us-east-1.pkr.hcl
+          packer fmt ./packer/ami.us-east-1.pkr.hcl
+          packer validate ./packer/ami.us-east-1.pkr.hcl
+          packer build ./packer/ami.us-east-1.pkr.hcl
+          
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.GA_DEV_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.GA_DEV_SECRET_KEY }}
+          
