@@ -15,7 +15,6 @@ variable aws_region {
 variable "source-ami" {
   type    = string
   default = "ami-06db4d78cb1d3bbf9"
-//   ami-058bd2d568351da34
 }
 
 variable ssh_username {
