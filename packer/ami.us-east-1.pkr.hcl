@@ -35,9 +35,7 @@ source "amazon-ebs" "my-ami" {
   ami_users       = ["095318616393", "085096129985"]
   
   tags = {
-    "Name"          = "Custom AMI",
-    "Environment"   = "Dev"
-    "Owner"         = "Anshul Sharma"
+    Name = "Custom AMI",
   }
 
   ami_regions = [
