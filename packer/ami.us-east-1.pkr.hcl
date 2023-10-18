@@ -33,6 +33,9 @@ source "amazon-ebs" "my-ami" {
   ami_description = "AMI for csye6225"
   profile         = "dev"
   ami_users       = ["095318616393", "085096129985"]
+  tags = {
+    Name = "Custom AMI"
+  }
 
   ami_regions = [
     "us-east-1",
