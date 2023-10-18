@@ -60,12 +60,12 @@ build {
   sources = ["source.amazon-ebs.my-ami"]
 
   provisioner "file" {
-    source = "./webapp.zip"
+    source      = "./webapp.zip"
     destination = "/tmp/webapp.zip"
   }
 
   provisioner "shell" {
-    script = "./setup.sh"
+    script           = "./setup.sh"
     environment_vars = [
       "DEBIAN_FRONTEND=noninteractive",
       "CHECKPOINT_DISABLE=1"
