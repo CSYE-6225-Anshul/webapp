@@ -48,7 +48,7 @@ source "amazon-ebs" "my-ami" {
 
   instance_type = "t2.micro"
   source_ami    = "${var.source-ami}"
-  ssh_username  = "${var.ssh_username}"
+  ssh_username  = "${var.ssh_usernam}"
   subnet_id     = "${var.subnet_id}"
 
   launch_block_device_mappings {
