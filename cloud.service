@@ -1,14 +1,16 @@
 [Unit]
 Description=CSYE 6225 webapp service
-ConditionPathExists=/opt/webapp
+ConditionPathExists=/home/admin/webapp
 After=network.target
 
 [Service]
 Type=simple
-User=Anshul
-Group=csye6225
-WorkingDirectory=/opt/webapp
-ExecStart=/opt/webapp/cloud.service
+User=admin
+Group=admin
+WorkingDirectory=/home/admin/webapp
+ExecStartPre=/bin/echo "Before starting"
+ExecStart=/usr/bin/node /home/admin/webapp/server.js
+ExecStartPost=/bin/echo "After starting"
 Restart=always
 RestartSec=3
 StandardOutput=syslog
