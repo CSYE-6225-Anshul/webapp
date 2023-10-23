@@ -1,0 +1,19 @@
+[Unit]
+Description=CSYE 6225 webapp service
+ConditionPathExists=/opt/webapp
+After=network.target
+
+[Service]
+Type=simple
+User=Anshul
+Group=csye6225
+WorkingDirectory=/opt/webapp
+ExecStart=/opt/webapp/cloud.service
+Restart=always
+RestartSec=3
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=csye6225
+
+[Install]
+WantedBy=multi-user.target
