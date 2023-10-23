@@ -3,7 +3,7 @@ WebApp will be a cloud based application for CSYE6225 assignments to learn cloud
 
 ## Prerequisites
 
-Before you begin, ensure you have met the following requirements:
+Before you begin, ensure you have met the following requirements: 
 
 - Node.js: [Download and install Node.js](https://nodejs.org/)
 - npm (Node Package Manager): Included with Node.js installation
