@@ -29,7 +29,7 @@ echo "Installing application dependenciess"
 echo "================================================================="
 mkdir /opt/csye6225/webapp
 unzip /tmp/webapp.zip -d /opt/csye6225/webapp
-(cd ~/webapp && npm ci)
+(cd /opt/csye6225/webapp && npm ci)
 
 echo "================================================================="
 echo "Starting systemd service"
