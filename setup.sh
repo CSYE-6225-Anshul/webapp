@@ -27,15 +27,15 @@ sudo apt-get install -y npm
 echo "================================================================="
 echo "Installing application dependenciess"
 echo "================================================================="
-mkdir /opt/csye6225/webapp
-unzip /tmp/webapp.zip -d /opt/csye6225/webapp
-(cd /opt/csye6225/webapp && npm ci)
+# mkdir /opt/csye6225/webapp
+unzip /tmp/webapp.zip -d /opt/csye6225
+(cd /opt/csye6225 && npm ci)
 
 echo "================================================================="
 echo "Starting systemd service"
 echo "================================================================="
 # Move systemd service unit file to the correct location
-sudo mv /opt/csye6225/webapp/cloud.service /etc/systemd/system/
+sudo mv /opt/csye6225/cloud.service /etc/systemd/system/
 
 # Enable and start the systemd service
 sudo systemctl enable cloud
