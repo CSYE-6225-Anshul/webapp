@@ -29,9 +29,9 @@ echo "Installing application dependenciess"
 echo "================================================================="
 # mkdir /opt/csye6225/webapp
 
-unzip /tmp/webapp.zip -d /opt/csye6225/
-(cd /opt/csye6225/ && npm ci)
-sudo chown -R csye7125:csye7125 /opt/csye6225/
+sudo unzip /tmp/webapp.zip -d /opt/csye6225/
+(cd /opt/csye6225/ && sudo npm ci)
+sudo chown -R csye6225:csye6225 /opt/csye6225/
 
 echo "================================================================="
 echo "Starting systemd service"
