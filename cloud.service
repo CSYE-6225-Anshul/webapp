@@ -1,7 +1,7 @@
 [Unit]
 Description=CSYE 6225 webapp service
 ConditionPathExists=/home/admin/webapp
-After=network.target
+After=cloud-final.target
 
 [Service]
 Type=simple
@@ -18,4 +18,4 @@ StandardError=syslog
 SyslogIdentifier=csye6225
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=cloud-init.target
