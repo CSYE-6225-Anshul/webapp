@@ -6,6 +6,12 @@ echo "================================================================="
 sudo apt-get update -y
 sudo apt-get install zip unzip -y
 
+echo "================================================================="
+echo "Adding user and group"
+echo "================================================================="
+sudo groupadd csye6225
+sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225
+
 # echo "================================================================="
 # echo "Installing and Setting up mysql"
 # echo "================================================================="
@@ -21,15 +27,15 @@ sudo apt-get install -y npm
 echo "================================================================="
 echo "Installing application dependenciess"
 echo "================================================================="
-mkdir ~/webapp
-unzip /tmp/webapp.zip -d ~/webapp/
+mkdir /opt/csye6225/webapp
+unzip /tmp/webapp.zip -d /opt/csye6225/webapp
 (cd ~/webapp && npm ci)
 
 echo "================================================================="
 echo "Starting systemd service"
 echo "================================================================="
 # Move systemd service unit file to the correct location
-sudo mv /home/admin/webapp/cloud.service /etc/systemd/system/
+sudo mv /opt/csye6225/webapp/cloud.service /etc/systemd/system/
 
 # Enable and start the systemd service
 sudo systemctl enable cloud
