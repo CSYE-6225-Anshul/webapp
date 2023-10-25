@@ -7,15 +7,16 @@ After=cloud-final.target
 Type=simple
 User=csye6225
 Group=csye6225
-WorkingDirectory=/opt/csye6225
+WorkingDirectory=/opt/csye6225/
 ExecStartPre=/bin/echo "Before starting"
 ExecStart=/usr/bin/node /opt/csye6225/server.js
 ExecStartPost=/bin/echo "After starting"
 Restart=always
-RestartSec=3
+RestartSec=10
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=csye6225
 
 [Install]
 WantedBy=cloud-init.target
+WantedBy=multi-user.target

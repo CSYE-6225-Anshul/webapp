@@ -28,17 +28,20 @@ echo "================================================================="
 echo "Installing application dependenciess"
 echo "================================================================="
 # mkdir /opt/csye6225/webapp
-unzip /tmp/webapp.zip -d /opt/csye6225
-(cd /opt/csye6225 && npm ci)
+
+unzip /tmp/webapp.zip -d /opt/csye6225/
+(cd /opt/csye6225/ && npm ci)
+sudo chown -R csye7125:csye7125 /opt/csye6225/
 
 echo "================================================================="
 echo "Starting systemd service"
 echo "================================================================="
 # Move systemd service unit file to the correct location
-sudo mv /opt/csye6225/cloud.service /etc/systemd/system/
+sudo mv /opt/csye6225/cloud.service /etc/systemd/system/cloud.service
 
 # Enable and start the systemd service
-sudo systemctl enable cloud
-sudo systemctl start cloud
+sudo systemctl daemon-reload
+sudo systemctl enable cloud.service
+sudo systemctl start cloud.service
 
 echo "=======================ALL DONE==================================="
