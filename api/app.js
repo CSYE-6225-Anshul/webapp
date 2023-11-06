@@ -5,6 +5,7 @@ const routes = require('./routes/index');
 const dotenv = require('dotenv').config();
 const app = express();
 const readCSV = require('./controllers/readCSV');
+const logger = require('../logger');
 
 app.use(cors());
 app.use(express.json());
@@ -28,6 +29,9 @@ const syncDatabase = async () => {
         // Synchronize the database
         await db.sequelize.sync();
         console.log('Database synchronized successfully');
+        logger.info('Database synchronized successfully');
+        logger.warn('Database synchronized successfully');
+        logger.error('Database synchronized successfully');
         // Now that the database is synchronized, read the CSV
         await readCSV();
     } catch (error) {
