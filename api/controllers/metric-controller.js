@@ -1,15 +1,19 @@
 const AWS = require('aws-sdk');
-const cloudwatch = new AWS.CloudWatch();
+const cloudwatch = new AWS.CloudWatch({ region: 'us-east-1' });
 
-const publishCustomMetric = (apiEndpoint) => {
+const publishCustomMetric = (apiEndpoint, method) => {
   const params = {
     MetricData: [
       {
         MetricName: 'ApiUsage',
         Dimensions: [
           {
-            Name: 'ApiEndpoint',
+            Name: 'Endpoint',
             Value: apiEndpoint,
+          },
+          {
+            Name: 'Method',
+            Value: method,
           },
         ],
         Unit: 'Count',
