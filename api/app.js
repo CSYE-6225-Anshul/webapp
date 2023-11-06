@@ -6,6 +6,7 @@ const dotenv = require('dotenv').config();
 const app = express();
 const readCSV = require('./controllers/readCSV');
 const logger = require('../logger');
+const StatsD = require('statsd-client');
 
 app.use(cors());
 app.use(express.json());
@@ -24,14 +25,27 @@ const checkConnection = async (req, res, next) => {
 }
 app.use(checkConnection);
 
+// Middleware for instrumenting APIs
+const statsd = new StatsD({ host: 'localhost', port: 8125 });
+const apiInstrumentation = (req, res, next) => {
+    const apiEndpoint = req.originalUrl.startsWith('/v1')
+    ? req.originalUrl.split('/v1')[1]
+    : req.originalUrl;
+    // Increment the API counter using node-statsd
+    statsd.increment('api_requests_total', 1, { endpoint: apiEndpoint, method: req.method });
+    console.log('statsd', statsd);
+    next();
+}
+
+// Apply the middleware to all routes
+app.use(apiInstrumentation);
+
 const syncDatabase = async () => {
     try {
         // Synchronize the database
         await db.sequelize.sync();
         console.log('Database synchronized successfully');
-        logger.info('Database synchronized successfully');
         logger.warn('Database synchronized successfully');
-        logger.error('Database synchronized successfully');
         // Now that the database is synchronized, read the CSV
         await readCSV();
     } catch (error) {
