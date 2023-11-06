@@ -76,7 +76,7 @@ build {
   }
 
   provisioner "shell" {
-    script = "./cloudwatch.sh",
+    script = "./cloudwatch.sh"
     environment_vars = [
       "DEBIAN_FRONTEND=noninteractive",
       "CHECKPOINT_DISABLE=1"
