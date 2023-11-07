@@ -5,8 +5,7 @@ const routes = require('./routes/index');
 const dotenv = require('dotenv').config();
 const app = express();
 const readCSV = require('./controllers/readCSV');
-const logger = require('../logger');
-const metricController = require('./controllers/metric-controller');
+const StatsD = require('statsd-client');
 
 app.use(cors());
 app.use(express.json());
@@ -26,15 +25,17 @@ const checkConnection = async (req, res, next) => {
 app.use(checkConnection);
 
 // Middleware for instrumenting APIs
+const statsd = new StatsD({host: process.env.METRICS_HOSTNAME, port: process.env.METRICS_PORT});
 const apiInstrumentation = (req, res, next) => {
     const apiEndpoint = req.originalUrl.startsWith('/v1')
-    ? req.originalUrl.split('/v1')[1]
-    : req.originalUrl;
-
-    const statsd = metricController(apiEndpoint, req.method);
-    console.log('statsd', statsd);
+      ? req.originalUrl.split('/v1')[1]
+      : req.originalUrl;
+  
+    // Increment the API counter using node-statsd
+    const stats = statsd.increment('api_requests_total', 1, { endpoint: apiEndpoint, method: req.method });
+    console.log('statsd', stats);
     next();
-}
+  }
 
 // Apply the middleware to all routes
 app.use(apiInstrumentation);
@@ -44,7 +45,6 @@ const syncDatabase = async () => {
         // Synchronize the database
         await db.sequelize.sync();
         console.log('Database synchronized successfully');
-        logger.warn('Database synchronized successfully');
         // Now that the database is synchronized, read the CSV
         await readCSV();
     } catch (error) {
