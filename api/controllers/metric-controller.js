@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const cloudwatch = new AWS.CloudWatch({ region: 'us-east-1' });
+const cloudwatch = new AWS.CloudWatch({ region: process.env.REGION });
 
 const publishCustomMetric = (apiEndpoint, method) => {
   const params = {

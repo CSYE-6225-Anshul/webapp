@@ -1,4 +1,5 @@
 const db = require('../models/index.js');
+const logger = require('../../logger.js');
 
 const get = async (req, res, next) => {
     try {
@@ -37,11 +38,11 @@ const setErrorResponse = (err, res, statusCode) => {
 const checkConnection = async (res, next) => {
     try {
         await db.sequelize.authenticate();
-        console.log('Connection is established.');
+        logger.info(`Connection is established.`);
         await db.sequelize.sync({ force: false }); // Set 'force' to true to force synchronization
         next();
     } catch (error) {
-        console.error('Unable to connect to the database.');
+        logger.error(`Unable to connect to the database.`);
         res.status(503).json();
     }
 }

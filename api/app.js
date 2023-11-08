@@ -7,6 +7,7 @@ const app = express();
 const readCSV = require('./controllers/readCSV');
 const logger = require('../logger');
 const StatsD = require('statsd-client');
+const metricController = require('./controllers/metric-controller');
 
 app.use(cors());
 app.use(express.json());
@@ -16,10 +17,10 @@ app.use(express.urlencoded({ extended: true }));
 const checkConnection = async (req, res, next) => {
     try {
         await db.sequelize.authenticate();
-        console.log('Connection is established.');
+        logger.info(`Connection is established.`);
         next();
     } catch (error) {
-        console.error('Unable to connect to the database.');
+        logger.error(`Unable to connect to the database.`);
         return res.status(503).json();
     }
 }
@@ -34,7 +35,8 @@ const apiInstrumentation = (req, res, next) => {
   
     // Increment the API counter using node-statsd
     const stats = statsd.increment('api_requests_total', 1, { endpoint: apiEndpoint, method: req.method });
-    console.log('statsd', stats);
+    metricController(apiEndpoint, req.method);
+    logger.info(`statsd: ${stats}`);
     next();
   }
 
@@ -45,12 +47,11 @@ const syncDatabase = async () => {
     try {
         // Synchronize the database
         await db.sequelize.sync();
-        console.log('Database synchronized successfully');
-        logger.warn('Database synchronized successfully');
+        logger.info('Database synchronized successfully');
         // Now that the database is synchronized, read the CSV
         await readCSV();
     } catch (error) {
-        console.error('Error synchronizing database:', error);
+        logger.error(`Error synchronizing database: ${error}`);
     }
 };
 
