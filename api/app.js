@@ -6,8 +6,8 @@ const dotenv = require('dotenv').config();
 const app = express();
 const readCSV = require('./controllers/readCSV');
 const logger = require('../logger');
-const StatsD = require('statsd-client');
-const metricController = require('./controllers/metric-controller');
+// const StatsD = require('statsd-client');
+// const metricController = require('./controllers/metric-controller');
 
 app.use(cors());
 app.use(express.json());
@@ -27,21 +27,21 @@ const checkConnection = async (req, res, next) => {
 app.use(checkConnection);
 
 // Middleware for instrumenting APIs
-const statsd = new StatsD({host: process.env.METRICS_HOSTNAME, port: process.env.METRICS_PORT});
-const apiInstrumentation = (req, res, next) => {
-    const apiEndpoint = req.originalUrl.startsWith('/v1')
-      ? req.originalUrl.split('/v1')[1]
-      : req.originalUrl;
+// const statsd = new StatsD({host: process.env.METRICS_HOSTNAME, port: process.env.METRICS_PORT});
+// const apiInstrumentation = (req, res, next) => {
+//     const apiEndpoint = req.originalUrl.startsWith('/v1')
+//       ? req.originalUrl.split('/v1')[1]
+//       : req.originalUrl;
   
-    // Increment the API counter using node-statsd
-    const stats = statsd.increment('api_requests_total', 1, { endpoint: apiEndpoint, method: req.method });
-    metricController(apiEndpoint, req.method);
-    logger.info(`statsd: ${stats}`);
-    next();
-  }
+//     // Increment the API counter using node-statsd
+//     const stats = statsd.increment('api_requests_total', 1, { endpoint: apiEndpoint, method: req.method });
+//     metricController(apiEndpoint, req.method);
+//     logger.info(`statsd: ${stats}`);
+//     next();
+//   }
 
-// Apply the middleware to all routes
-app.use(apiInstrumentation);
+// // Apply the middleware to all routes
+// app.use(apiInstrumentation);
 
 const syncDatabase = async () => {
     try {

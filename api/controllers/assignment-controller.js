@@ -1,6 +1,8 @@
 const assignmentService = require('../services/assignment-service');
 const db = require('../models/index.js');
 const { NUMBER } = require('sequelize');
+const StatsD = require('node-statsd');
+const statsd = new StatsD({host: process.env.METRICS_HOSTNAME, port: process.env.METRICS_PORT});
 
 // Payload error response fn
 const setPayloadErrResponse = (res) => {
@@ -9,6 +11,8 @@ const setPayloadErrResponse = (res) => {
 
 const getAllAssignments = async (req, res, next) => {
     try {
+        let stats = statsd.increment('getAllAssignments', 1);
+        console.log('stats', stats);
         let payloadCondition = false;
         if (req.query != null && Object.keys(req.query).length > 0) payloadCondition = true;
         if (req.body != null && Object.keys(req.body).length > 0) payloadCondition = true;
@@ -33,6 +37,8 @@ const getAllAssignments = async (req, res, next) => {
 
 const getAssignment = async (req, res, next) => {
     try {
+        let stats = statsd.increment('getAssignment', 1);
+        console.log('stats', stats);
         let payloadCondition = false;
         if (req.body != null && Object.keys(req.body).length > 0) payloadCondition = true;
         if (payloadCondition) {
@@ -65,6 +71,8 @@ const getAssignment = async (req, res, next) => {
 
 const createAssignment = async (req, res, next) => {
     try {
+        let stats = statsd.increment('createAssignment', 1);
+        console.log('stats', stats);
         let payloadCondition = false;
         if (req.query != null && Object.keys(req.query).length > 0) payloadCondition = true;
         if (payloadCondition) {
@@ -117,6 +125,8 @@ const createAssignment = async (req, res, next) => {
 
 const updateAssignment = async (req, res, next) => {
     try {
+        let stats = statsd.increment('updateAssignment', 1);
+        console.log('stats', stats);
         if (!req.body || req.body == null || Object.keys(req.body).length <= 0) {
             return res.status(400).json({ error: 'All fields should be defined.' });
         }
@@ -165,6 +175,8 @@ const updateAssignment = async (req, res, next) => {
 
 const deleteAssignment = async (req, res, next) => {
     try {
+        let stats = statsd.increment('deleteAssignment', 1);
+        console.log('stats', stats);
         let payloadCondition = false;
         if (req.body != null && Object.keys(req.body).length > 0) payloadCondition = true;
         if (payloadCondition) {
