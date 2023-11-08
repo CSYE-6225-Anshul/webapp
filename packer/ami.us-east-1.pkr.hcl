@@ -7,6 +7,26 @@ packer {
   }
 }
 
+variable aws_region {
+  type    = string
+  default = "us-east-1"
+}
+
+variable "source-ami" {
+  type    = string
+  default = "ami-06db4d78cb1d3bbf9"
+}
+
+variable ssh_username {
+  type    = string
+  default = "admin"
+}
+
+variable subnet_id {
+  type    = string
+  default = "subnet-09aa3b0406767d484"
+}
+
 source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
   ami_name        = "cyse 6225_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
