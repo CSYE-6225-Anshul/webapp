@@ -14,13 +14,13 @@ const logger = winston.createLogger({
   transports: [
     // Log 'info' and above messages to a file
     new winston.transports.File({
-      filename: "/var/log/csye6225.log",
+      filename: "var/log/csye6225.log",
       level: 'info',
     }),
  
     // Log 'error' and 'warning' messages to a separate file
     new winston.transports.File({
-      filename: "/var/log/csye6225.log",
+      filename: "var/log/csye6225.log",
       level: 'error',
     }),
  
@@ -35,4 +35,13 @@ const logger = winston.createLogger({
   ],
 });
  
-module.exports = logger;
+// Conditionally use the logger in production, else use console.log
+if (process.env.NODE_ENV === 'production') {
+  module.exports = logger;
+} else {
+  module.exports = {
+    info: (message) => console.log(`[INFO] ${message}`),
+    warn: (message) => console.warn(`[WARN] ${message}`),
+    error: (message) => console.error(`[ERROR] ${message}`),
+  }
+}
