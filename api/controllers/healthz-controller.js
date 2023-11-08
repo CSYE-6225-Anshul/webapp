@@ -1,8 +1,12 @@
 const db = require('../models/index.js');
 const logger = require('../../logger.js');
+const StatsD = require('node-statsd');
+const statsd = new StatsD({host: process.env.METRICS_HOSTNAME, port: process.env.METRICS_PORT});
 
 const get = async (req, res, next) => {
     try {
+        let stats = statsd.increment('healthz', 1);
+        console.log('stats', stats);
         let payloadCondition = false;
         if (req.query != null && Object.keys(req.query).length > 0) payloadCondition = true;
         if (req.body != null && Object.keys(req.body).length > 0) payloadCondition = true;

@@ -23,7 +23,7 @@
   "description": "Cloud assignment 2",
   "main": "app.js",
   "scripts": {
-    "test": "mocha ./api/test.js"
+    "test": "mocha ./api/test.js --exit"
   },
   "author": "Anshul Sharma",
   "license": "ISC",
