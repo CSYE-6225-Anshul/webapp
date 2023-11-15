@@ -77,6 +77,6 @@ build {
 
   provisioner "file" {
     source      = "./api/cloudwatch/config.json"
-    destination = "/opt/config.json"
+    destination = "/tmp/config.json"
   }
 }
