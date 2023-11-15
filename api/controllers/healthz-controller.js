@@ -7,6 +7,7 @@ const get = async (req, res, next) => {
     try {
         let stats = statsd.increment('healthz', 1);
         console.log('stats', stats);
+        logger.info('method - GET | endpoint - /healthz');
         let payloadCondition = false;
         if (req.query != null && Object.keys(req.query).length > 0) payloadCondition = true;
         if (req.body != null && Object.keys(req.body).length > 0) payloadCondition = true;
