@@ -76,7 +76,7 @@ build {
   }
 
   provisioner "file" {
-    source      = "/opt/csye6225/api/cloudwatch/config.json"
-    destination = "/opt/"
+    source      = "./api/cloudwatch/config.json"
+    destination = "/opt/config.json"
   }
 }
