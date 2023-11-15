@@ -29,7 +29,7 @@ variable subnet_id {
 
 source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
-  ami_name        = "cyse 6225_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
+  ami_name        = "cyse_6225_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
   ami_description = "AMI for csye6225"
   profile         = "dev"
   ami_users       = ["095318616393", "085096129985"]
@@ -73,5 +73,10 @@ build {
       "DEBIAN_FRONTEND=noninteractive",
       "CHECKPOINT_DISABLE=1"
     ]
+  }
+
+  provisioner "file" {
+    source      = "/opt/csye6225/api/cloudwatch/config.json"
+    destination = "/opt/"
   }
 }
