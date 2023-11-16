@@ -14,7 +14,7 @@ const getAllAssignments = async (req, res, next) => {
     try {
         let stats = statsd.increment('getAllAssignments', 1);
         console.log('stats', stats);
-        logger.info('method - GET | endpoint - /v1/assignments');
+        logger.info(`Method: ${req.method} - Endpoint: ${req.baseUrl} - Client IP: ${req.connection.remoteAddress}`);
         let payloadCondition = false;
         if (req.query != null && Object.keys(req.query).length > 0) payloadCondition = true;
         if (req.body != null && Object.keys(req.body).length > 0) payloadCondition = true;
@@ -41,7 +41,7 @@ const getAssignment = async (req, res, next) => {
     try {
         let stats = statsd.increment('getAssignment', 1);
         console.log('stats', stats);
-        logger.info('method - GET | endpoint - /v1/assignments/id');
+        logger.info(`Method: ${req.method} - Endpoint: ${req.originalUrl} - Client IP: ${req.connection.remoteAddress}`);
         let payloadCondition = false;
         if (req.body != null && Object.keys(req.body).length > 0) payloadCondition = true;
         if (payloadCondition) {
@@ -76,7 +76,7 @@ const createAssignment = async (req, res, next) => {
     try {
         let stats = statsd.increment('createAssignment', 1);
         console.log('stats', stats);
-        logger.info('method - POST | endpoint - /v1/assignments');
+        logger.info(`Method: ${req.method} - Endpoint: ${req.baseUrl} - Client IP: ${req.connection.remoteAddress}`);
         let payloadCondition = false;
         if (req.query != null && Object.keys(req.query).length > 0) payloadCondition = true;
         if (payloadCondition) {
@@ -131,7 +131,7 @@ const updateAssignment = async (req, res, next) => {
     try {
         let stats = statsd.increment('updateAssignment', 1);
         console.log('stats', stats);
-        logger.info('method - PUT | endpoint - /v1/assignments/id');
+        logger.info(`Method: ${req.method} - Endpoint: ${req.originalUrl} - Client IP: ${req.connection.remoteAddress}`);
         if (!req.body || req.body == null || Object.keys(req.body).length <= 0) {
             return res.status(400).json({ error: 'All fields should be defined.' });
         }
@@ -182,7 +182,7 @@ const deleteAssignment = async (req, res, next) => {
     try {
         let stats = statsd.increment('deleteAssignment', 1);
         console.log('stats', stats);
-        logger.info('method - DELETE | endpoint - /v1/assignments/id');
+        logger.info(`Method: ${req.method} - Endpoint: ${req.originalUrl} - Client IP: ${req.connection.remoteAddress}`);
         let payloadCondition = false;
         if (req.body != null && Object.keys(req.body).length > 0) payloadCondition = true;
         if (payloadCondition) {
