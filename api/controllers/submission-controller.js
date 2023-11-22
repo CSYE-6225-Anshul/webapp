@@ -1,9 +1,20 @@
 const assignmentService = require('../services/assignment-service');
 const submissionService = require('../services/submission-service.js');
+const accountService = require('../services/account-service.js');
 const StatsD = require('node-statsd');
 const statsd = new StatsD({host: process.env.METRICS_HOSTNAME, port: process.env.METRICS_PORT});
 const logger = require('../../logger.js');
-const e = require('express');
+const AWS = require('aws-sdk');
+
+// Setting AWS credentials and region
+AWS.config.update({
+    accessKeyId: process.env.ACCESS_KEY_ID,
+    secretAccessKey: process.env.SECRET_ACCESS_KEY,
+    region: process.env.REGION,
+});
+
+// Create an SNS object
+const sns = new AWS.SNS();
 
 // Payload error response fn
 const setPayloadErrResponse = (res) => {
@@ -40,10 +51,39 @@ const createSubmission = async (req, res, next) => {
                 return res.status(403).json({ error: 'The due date for this assignment has passed.' });
             }
             
-            // Create submission
-            const submission = await submissionService.createSubmission({ submission_url, assignment_id: assignmentId });
-            if (submission) {
-                return res.status(201).json(submission);
+            // get account from accoutnService 
+            const account = await accountService.getAccount(accountId);
+            const topicArn = process.env.SNS_TOPIC;
+          
+            // Message to be sent to the SNS topic
+            const message = {
+                email: account.email,
+                url: submission_url
+            };
+            
+            // Publish the message to the SNS topic
+            const params = {
+                Message: JSON.stringify(message),
+                TopicArn: topicArn,
+            }
+            
+            try {
+                const publishResult = await sns.publish(params).promise();
+                console.log('----------res---------', publishResult)
+                // Check if the message was successfully published to the SNS topic
+                if (publishResult.MessageId) {
+                    // Create submission
+                    const submission = await submissionService.createSubmission({ submission_url, assignment_id: assignmentId });
+                    if (submission) {
+                        return res.status(201).json(submission);
+                    }
+                } else {
+                    console.error('Error publishing to SNS:', publishResult);
+                    return res.status(503).json({ error: 'Failed to publish message to SNS' });
+                }
+            } catch (error) {
+                console.error('Error publishing to SNS:', error);
+                return res.status(503).json({ error: 'Failed to publish message to SNS' });
             }
         } else {
             return res.status(404).json();
