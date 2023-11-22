@@ -40,11 +40,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     account_created: {
       type: DataTypes.DATE,
-        defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+      defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
+      readOnly: true
     },
     account_updated: {
       type: DataTypes.DATE,
-      defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+      defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
+      readOnly: true
     },
   }, {
     sequelize,

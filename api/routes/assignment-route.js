@@ -1,6 +1,7 @@
 const express = require('express');
 const Router = express.Router();
 const assignmentController = require('../controllers/assignment-controller.js');
+const submissionController = require('../controllers/submission-controller.js');
 
 Router.route('/')
     .get(assignmentController.getAllAssignments)
@@ -10,6 +11,9 @@ Router.route('/:id')
     .get(assignmentController.getAssignment)
     .put(assignmentController.updateAssignment)
     .delete(assignmentController.deleteAssignment);
+
+Router.route('/:id/submission')
+    .post(submissionController.createSubmission);
 
 // Middleware to send an error response for non-GET requests
 Router.use((req, res, next) => {

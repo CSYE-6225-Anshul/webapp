@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Assignment extends Model {
+  class Submission extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,47 +11,39 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Assignment.hasOne(models.AccountAssignment, { foreignKey: 'assignmentId', sourceKey: 'id', as: 'accAssignment' });
     }
   }
-  Assignment.init({
+  Submission.init({
     id: {
       primaryKey: true,
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       readOnly: true
     },
-    name: {
+    assignment_id: {
+      primaryKey: true,
+      type: DataTypes.UUID,
+      allowNull: false,
+      readOnly: true
+    },
+    submission_url: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    points: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    num_of_attempts: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    deadline: {
+    submission_date: { 
       type: DataTypes.DATE,
-      allowNull: false
+      defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
     },
-    assignment_created: { 
-      type: DataTypes.DATE,
-      defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
-      readOnly: true
-    },
-    assignment_updated: {
+    submission_updated: {
       type: DataTypes.DATE,
       readOnly: true,
       defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
     },
   }, {
     sequelize,
-    modelName: 'Assignment',
+    modelName: 'Submission',
     timestamps: false, // Disable timestamps
   });
 
-  return Assignment;
+  return Submission;
 };
