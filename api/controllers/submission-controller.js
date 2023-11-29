@@ -58,7 +58,9 @@ const createSubmission = async (req, res, next) => {
             // Message to be sent to the SNS topic
             const message = {
                 email: account.email,
-                url: submission_url
+                url: submission_url,
+                assignmentId: assignmentId,
+                accountId: accountId,
             };
             
             // Publish the message to the SNS topic
@@ -69,7 +71,7 @@ const createSubmission = async (req, res, next) => {
             
             try {
                 const publishResult = await sns.publish(params).promise();
-                console.log('----------res---------', publishResult)
+                logger.info('----------res of ses---------', publishResult);
                 // Check if the message was successfully published to the SNS topic
                 if (publishResult.MessageId) {
                     // Create submission
@@ -78,11 +80,11 @@ const createSubmission = async (req, res, next) => {
                         return res.status(201).json(submission);
                     }
                 } else {
-                    console.error('Error publishing to SNS:', publishResult);
+                    logger.info('Error publishing to SNS:', publishResult);
                     return res.status(503).json({ error: 'Failed to publish message to SNS' });
                 }
             } catch (error) {
-                console.error('Error publishing to SNS:', error);
+                logger.info('Error publishing to SNS:', error);
                 return res.status(503).json({ error: 'Failed to publish message to SNS' });
             }
         } else {
@@ -94,7 +96,7 @@ const createSubmission = async (req, res, next) => {
         } else if (error.name === 'PermissionError') {
             return res.status(403).json({ error: 'Permission denied' });
         }
-        console.error('An error occurred:', error);
+        logger.info('An error occurred:', error);
         return res.status(503).json();
     }
 }
