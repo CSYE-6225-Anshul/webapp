@@ -1,4 +1,5 @@
 const assignmentService = require('../services/assignment-service');
+const submissionService = require('../services/submission-service.js');
 const db = require('../models/index.js');
 const StatsD = require('node-statsd');
 const statsd = new StatsD({host: process.env.METRICS_HOSTNAME, port: process.env.METRICS_PORT});
@@ -215,6 +216,16 @@ const deleteAssignment = async (req, res, next) => {
 
         if (!assignment || assignment.accAssignment.accountId !== userId) {
             return res.status(403).json({ error: 'You do not have permission to delete this assignment.' });
+        }
+
+        if(assignment) {
+            let prevSubmissions = await submissionService.getSubmissionCount(assignmentId);
+        
+            if(!prevSubmissions) prevSubmissions = 0;
+            if(prevSubmissions > 0) {
+                logger.warn('Cannot delete this assignment as there are submissions against it');
+                return res.status(400).json({ error: 'This assignment has submissions so it cannot be deleted.' });
+            }
         }
 
         const deletedAssignment = await assignmentService.deleteAssignment(assignmentId);

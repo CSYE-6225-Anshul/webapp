@@ -21,10 +21,22 @@ module.exports = (sequelize, DataTypes) => {
       readOnly: true
     },
     assignment_id: {
-      primaryKey: true,
       type: DataTypes.UUID,
       allowNull: false,
-      readOnly: true
+      readOnly: true,
+      references: {
+        model: 'Assignments',
+        key: 'id',
+      }
+    },
+    account_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      readOnly: true,
+      references: {
+        model: 'Accounts',
+        key: 'id',
+      }
     },
     submission_url: {
       type: DataTypes.STRING,
