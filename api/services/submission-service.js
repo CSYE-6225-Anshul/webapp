@@ -8,12 +8,21 @@ const getAllSubmissions = async (assignment_id) => {
     });
 }
 
-const getSubmissionCount = async (assignment_id) => {
-    return await db.Submission.count({
-        where: {
-            assignment_id: assignment_id
-        }
-    });
+const getSubmissionCount = async (assignment_id, account_id) => {
+    if(account_id) {
+        return await db.Submission.count({
+            where: {
+                assignment_id: assignment_id,
+                account_id: account_id
+            }
+        });
+    } else {
+        return await db.Submission.count({
+            where: {
+                assignment_id: assignment_id
+            }
+        });
+    }
 }
 
 const createSubmission = async (body) => {
@@ -24,6 +33,7 @@ const createSubmission = async (body) => {
         await transaction.commit();
         return submission;
     } catch (error) {
+        console.log(error)
         await transaction.rollback();
     }
 }

@@ -36,12 +36,9 @@ const createSubmission = async (req, res, next) => {
         
         const accountId = req.user;
         let assignment = await assignmentService.getAssignment(req.params.id, accountId);
-        
-        if(assignment && assignment.accAssignment && assignment.accAssignment.accountId !== accountId) {
-            return res.status(403).json({ error: 'You do not have permission to view this assignment.' });
-        }
+       
         if(assignment) {
-            let prevSubmissions = await submissionService.getSubmissionCount(assignmentId);
+            let prevSubmissions = await submissionService.getSubmissionCount(assignmentId, accountId);
         
             if(!prevSubmissions) prevSubmissions = 0;
             if(assignment.num_of_attempts <= prevSubmissions) {
@@ -75,7 +72,7 @@ const createSubmission = async (req, res, next) => {
                 // Check if the message was successfully published to the SNS topic
                 if (publishResult.MessageId) {
                     // Create submission
-                    const submission = await submissionService.createSubmission({ submission_url, assignment_id: assignmentId });
+                    const submission = await submissionService.createSubmission({ submission_url, assignment_id: assignmentId, account_id: accountId });
                     if (submission) {
                         return res.status(201).json(submission);
                     }
