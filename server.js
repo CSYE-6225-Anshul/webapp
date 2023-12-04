@@ -3,5 +3,5 @@ const logger = require('./logger.js');
 
 const port = 8080;
 app.listen(port, () => {
-    logger.info(`App listening on ${port}`);
+    logger.info(`Application listening on ${port}`);
 });
