@@ -67,28 +67,16 @@ jobs:
           echo "ASG_NAME=$ASG_NAME" >> $GITHUB_ENV
 
       - name: Start instance fresh
-        run: |            
-          # Function to check the status of the instance refresh
-          check_refresh_status() {
-            STATUS=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $ASG_NAME --query 'AutoScalingGroups[0].Status' --output text)
-            echo "Current instance refresh status: $STATUS"
-            
-            if [ "$STATUS" == "Successful" ] || [ "$STATUS" == "Failed" ] || [ "$STATUS" == "Cancelled" ]; then
-              return 0  # Instance refresh completed or failed
-            else
-              return 1  # Instance refresh still in progress
+        run: aws autoscaling start-instance-refresh --auto-scaling-group-name $ASG_NAME
+      
+      - name: Wait for Instance Refresh Completion
+        run: |
+          while : ; do
+            STATUS=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name $ASG_NAME --query 'InstanceRefreshes[0].Status' --output text)
+            if [[ "$STATUS" == "Successful" || "$STATUS" == "Failed" || "$STATUS" == "Cancelled" ]]; then
+              echo "Instance refresh completed with status: $STATUS"
+              break
             fi
-          }
-
-          # Start the instance refresh
-          echo "Starting instance refresh for Auto Scaling Group: $ASG_NAME"
-          aws autoscaling start-instance-refresh --auto-scaling-group-name $ASG_NAME
-
-          # Wait for the instance refresh to complete
-          while ! check_refresh_status; do
             echo "Waiting for instance refresh to complete..."
-            sleep 60  # Wait for 60 seconds before checking again
+            sleep 60 # Wait for 60 seconds before checking again
           done
-
-          echo "Instance refresh completed with status: $STATUS"
-          
