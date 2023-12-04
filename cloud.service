@@ -17,6 +17,6 @@ StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=csye6225
 
-[Install] 
+[Install]
 WantedBy=cloud-init.target
 WantedBy=multi-user.target
